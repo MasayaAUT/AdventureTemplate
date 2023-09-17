@@ -107,7 +107,8 @@ namespace MasayaScripts
             Vector3 horizontalDirection = transform.right * horizontal; //Gets how much the player is moving left/right
             Vector3 verticalDirection = transform.forward * vertical; //Gets how much the player is moving forward/back
             Vector3 moveDirection = (verticalDirection + horizontalDirection).normalized * speed * Time.deltaTime * 1; //Combines the directions together
-            rb.MovePosition(moveDirection + rb.position); //Moves the player to the new position by adding the movedirection to the players current position
+                                                                                                                       //rb.MovePosition(moveDirection + rb.position); //Moves the player to the new position by adding the movedirection to the players current position
+            rb.MovePosition(transform.position + moveDirection);
         }
 
         /// <summary>
