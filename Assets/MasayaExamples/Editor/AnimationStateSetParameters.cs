@@ -61,7 +61,7 @@ public class AnimationStateSetParameters : EditorWindow
         {
             AddDialogueNode(currentAnim, DialogueNode.DialogueType.End);
         }
-        if(GUILayout.Button("Set Selected Node Parameters"))
+        if(GUILayout.Button("Update Selected Node Parameters"))
         {
             SetParameters();
         }
@@ -134,7 +134,7 @@ public class AnimationStateSetParameters : EditorWindow
                         for (int i = 0; i < ac.transitions.Length; i++)
                         {
                             ac.transitions[i].hasExitTime = false;
-                            ac.transitions[i].AddCondition(UnityEditor.Animations.AnimatorConditionMode.Equals, 0, "NextDialogue");
+                            ac.transitions[i].AddCondition(UnityEditor.Animations.AnimatorConditionMode.If, 0, "NextDialogue");
                         }
                         break;
                     case DialogueNode.DialogueType.MultiChoice:

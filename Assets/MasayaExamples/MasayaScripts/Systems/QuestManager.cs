@@ -48,8 +48,14 @@ namespace MasayaScripts.Quest
                 if (quest.questName == questName)
                 {
                     quest.isCompleted = true;
+                    return;
                 }
             }
+
+            QuestData questData = new QuestData();
+            questData.questName = questName;
+            questData.isCompleted = true;
+            questList.Add(questData);
         }
         public bool PlayerHasQuest(string questName)
         {

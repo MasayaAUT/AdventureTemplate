@@ -1793,6 +1793,44 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 1440868086}
+          m_TargetAssemblyTypeName: MasayaScripts.NPC, Assembly-CSharp
+          m_MethodName: CompleteQuest
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: CollectCubes
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1440868086}
+          m_TargetAssemblyTypeName: MasayaScripts.NPC, Assembly-CSharp
+          m_MethodName: SetItemAmount
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 10
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1440868086}
+          m_TargetAssemblyTypeName: MasayaScripts.NPC, Assembly-CSharp
+          m_MethodName: RemoveItem
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: ff08ee5297281ef4ab67c56266fb06a3,
+              type: 2}
+            m_ObjectArgumentAssemblyTypeName: MasayaScripts.InventorySystem.Item,
+              Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - dialogueConditionType: 3
     dialogueController: {fileID: 9100000, guid: ef57d2bc9213045419cde8f9b05d98f4,
       type: 2}
@@ -1833,6 +1871,18 @@ MonoBehaviour:
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+        - m_Target: {fileID: 1440868086}
+          m_TargetAssemblyTypeName: MasayaScripts.NPC, Assembly-CSharp
+          m_MethodName: AddQuest
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: CollectCubes
             m_BoolArgument: 1
           m_CallState: 2
   enterEvent:
