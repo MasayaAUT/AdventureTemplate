@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 namespace MasayaScripts
 {
@@ -11,6 +12,9 @@ namespace MasayaScripts
         public string sceneName;
         public bool setLevelLoadPosition;
         public Vector3 levelLoadPosition;
+
+        public UnityEvent enterEvent;
+        public UnityEvent exitEvent;
 
         private void Update()
         {
@@ -32,6 +36,7 @@ namespace MasayaScripts
             if (other.gameObject.tag == "Player")
             {
                 playerFound = true;
+                enterEvent.Invoke();
             }
         }
 
@@ -40,6 +45,7 @@ namespace MasayaScripts
             if (other.gameObject.tag == "Player")
             {
                 playerFound = false;
+                exitEvent.Invoke();
             }
         }
     }
