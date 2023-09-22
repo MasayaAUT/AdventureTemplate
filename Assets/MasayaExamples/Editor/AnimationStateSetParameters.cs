@@ -3,10 +3,99 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using MasayaScripts;
+using UnityEditor.Animations;
 
-public static class AnimationStateSetParameters
+public class AnimationStateSetParameters : EditorWindow
 {
-    [MenuItem("Tools/Set Animation State Parameters #&P", false, 901)]
+    string animatorName = "No Animator Selected";
+    AnimatorController currentAnim;
+
+    [MenuItem("MasayaTools/DialogueSystem")]
+    public static void ShowWindow()
+    {
+        GetWindow<AnimationStateSetParameters>(false, "DialogueSystem", true);
+    }
+
+    private void Update()
+    {
+        for (int i = 0; i < Selection.objects.Length; i++)
+        {
+            AnimatorController controller = Selection.objects[i] as AnimatorController;
+            if (controller != null)
+            {
+                if (controller != currentAnim)
+                {
+                    animatorName = "Current Animator = " + controller.name;
+                    currentAnim = controller;
+                    Repaint();
+                }
+            }
+            else
+            {
+                if (animatorName != "No Animator Selected" && currentAnim == null)
+                {
+                    animatorName = "No Animator Selected";
+                    Repaint();
+                }
+            }
+        }
+    }
+
+    private void OnGUI()
+    {
+
+        EditorGUILayout.LabelField(animatorName);
+        if (GUILayout.Button("Convert To Dialogue"))
+        {
+            ConvertToDialogue(currentAnim);
+        }
+        if(GUILayout.Button("Create Text Node"))
+        {
+            AddDialogueNode(currentAnim, DialogueNode.DialogueType.Text);
+        }
+        if (GUILayout.Button("Create Multi Choice Node"))
+        {
+            AddDialogueNode(currentAnim, DialogueNode.DialogueType.MultiChoice);
+        }
+        if (GUILayout.Button("Create End Node"))
+        {
+            AddDialogueNode(currentAnim, DialogueNode.DialogueType.End);
+        }
+        if(GUILayout.Button("Set Selected Node Parameters"))
+        {
+            SetParameters();
+        }
+    }
+
+    public static void ConvertToDialogue(AnimatorController currentAnim)
+    {
+        if (currentAnim != null)
+        {
+            currentAnim.parameters = null;
+            currentAnim.AddParameter("NextDialogue", AnimatorControllerParameterType.Trigger);
+            currentAnim.AddParameter("DialogueOption", AnimatorControllerParameterType.Int);
+            AnimatorState state = currentAnim.layers[0].stateMachine.AddState("Dialogue");
+        }
+    }
+    public static void AddDialogueNode(AnimatorController controller, DialogueNode.DialogueType dt)
+    {
+        if (controller != null)
+        {
+            AnimatorState state = controller.layers[0].stateMachine.AddState("Dialogue");
+            DialogueNode node = state.AddStateMachineBehaviour<DialogueNode>();
+            node.dialogueType = dt;
+            switch (dt)
+            {
+                case DialogueNode.DialogueType.MultiChoice:
+                    state.name = "{Choices}";
+                    break;
+                case DialogueNode.DialogueType.End:
+                    state.name = "{End}";
+                    break;
+            }
+        }
+    }
+
     public static void SetParameters()
     {
         for (int x = 0; x < Selection.objects.Length; x++)
@@ -61,11 +150,5 @@ public static class AnimationStateSetParameters
                 }
             }
         }
-    }
-
-    [MenuItem("Tools/Set Animation State Parameters", true)]
-    public static bool SetParametersValidation()
-    {
-        return Selection.objects.Length > 0;
     }
 }

@@ -43,14 +43,10 @@ public class DialogueNodeEditor : Editor
                 break;
         }
 
-        if (GUILayout.Button("Set Parameters"))
-        {
-            UpdateParameters();
-        }
-
         serializedObject.ApplyModifiedProperties();
     }
 
+    /*
     public void UpdateParameters()
     {
         UnityEditor.Animations.AnimatorState ac = Selection.activeObject as UnityEditor.Animations.AnimatorState;
@@ -98,4 +94,5 @@ public class DialogueNodeEditor : Editor
                 break;
         }
     }
+    */
 }
