@@ -75,6 +75,7 @@ public class AnimationStateSetParameters : EditorWindow
             currentAnim.AddParameter("NextDialogue", AnimatorControllerParameterType.Trigger);
             currentAnim.AddParameter("DialogueOption", AnimatorControllerParameterType.Int);
             AnimatorState state = currentAnim.layers[0].stateMachine.AddState("Dialogue");
+            state.AddStateMachineBehaviour<DialogueNode>();
         }
     }
     public static void AddDialogueNode(AnimatorController controller, DialogueNode.DialogueType dt)
