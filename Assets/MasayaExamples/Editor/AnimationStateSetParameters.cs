@@ -12,6 +12,7 @@ public static class AnimationStateSetParameters
         for (int x = 0; x < Selection.objects.Length; x++)
         {
             UnityEditor.Animations.AnimatorState ac = Selection.objects[x] as UnityEditor.Animations.AnimatorState;
+
             if (ac != null)
             {
                 DialogueNode node = ac.behaviours[0] as DialogueNode;
@@ -31,7 +32,15 @@ public static class AnimationStateSetParameters
                 switch (dt)
                 {
                     case DialogueNode.DialogueType.Text:
-                        Selection.objects[x].name = node.dialogueText;
+                        string nodeName = node.dialogueText;
+                        if (nodeName.Length > 20)
+                        {
+                            nodeName = nodeName.Substring(0, 20);
+                            nodeName += "_";
+                        }
+
+                        nodeName = nodeName.Replace(".", "_");
+                        Selection.objects[x].name = nodeName;
                         for (int i = 0; i < ac.transitions.Length; i++)
                         {
                             ac.transitions[i].hasExitTime = false;
@@ -39,7 +48,7 @@ public static class AnimationStateSetParameters
                         }
                         break;
                     case DialogueNode.DialogueType.MultiChoice:
-                        Selection.objects[x].name = "Choices";
+                        Selection.objects[x].name = "{Choices}";
                         for (int i = 0; i < ac.transitions.Length; i++)
                         {
                             ac.transitions[i].hasExitTime = false;
@@ -47,7 +56,7 @@ public static class AnimationStateSetParameters
                         }
                         break;
                     case DialogueNode.DialogueType.End:
-                        Selection.objects[x].name = "End";
+                        Selection.objects[x].name = "{End}";
                         break;
                 }
             }

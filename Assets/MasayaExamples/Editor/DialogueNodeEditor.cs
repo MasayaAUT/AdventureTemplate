@@ -70,7 +70,15 @@ public class DialogueNodeEditor : Editor
         switch (dt)
         {
             case DialogueNode.DialogueType.Text:
-                Selection.activeObject.name = node.dialogueText;
+                string nodeName = node.dialogueText;
+                if (nodeName.Length > 20)
+                {
+                    nodeName = nodeName.Substring(0, 20);
+                    nodeName += "_";
+                }
+
+                nodeName = nodeName.Replace(".", "_");
+                Selection.activeObject.name = nodeName;
                 for (int i = 0; i < ac.transitions.Length; i++)
                 {
                     ac.transitions[i].hasExitTime = false;
@@ -78,7 +86,7 @@ public class DialogueNodeEditor : Editor
                 }
                 break;
             case DialogueNode.DialogueType.MultiChoice:
-                Selection.activeObject.name = "Choices";
+                Selection.activeObject.name = "{Choices}";
                 for (int i = 0; i < ac.transitions.Length; i++)
                 {
                     ac.transitions[i].hasExitTime = false;
@@ -86,7 +94,7 @@ public class DialogueNodeEditor : Editor
                 }
                 break;
             case DialogueNode.DialogueType.End:
-                Selection.activeObject.name = "End";
+                Selection.activeObject.name = "{End}";
                 break;
         }
     }
