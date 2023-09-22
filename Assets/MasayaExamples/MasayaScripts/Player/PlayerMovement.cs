@@ -1,6 +1,7 @@
 //This Script Allows the player to move around the scene
 //It uses Unity's new Input System
 //And also MasayaScripts Namespace
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -16,13 +17,16 @@ namespace MasayaScripts
         [SerializeField] bool canMove; //This boolean will be used to stop player movement
         float horizontal; //Used for left/right movement
         float vertical; //Used for forward/back movement
+        Vector3 airDirection;
         int currentDirection = 1; //Used for checking what direction the user is moving; 1 = right, -1 = left
         bool isGrounded; //Boolean will change based on if the used is touching the ground or not
+        bool isJumping;
 
         [Header("Character Stats")]
         [SerializeField] private float speed = 1; //How fast the player can move
         [SerializeField] private float rotationSpeed = 5; //How fast the player will rotate when facing a different direction
         [SerializeField] private float jumpHeight = 1; //How high the player can jump
+        [SerializeField] private float airControl = 0; //How much control the player has in the air
 
         [Header("References")]
         [SerializeField] private LayerMask groundLayer; //Used for checking what the player can jump off
@@ -30,7 +34,6 @@ namespace MasayaScripts
         [SerializeField] private Animator anim; //The animator attached to the character
         [SerializeField] private PhysicMaterial noFriction; //Physic material used so the player won't get stuck against walls
         [SerializeField] private PhysicMaterial maxFriction; //Physic material used so the player won't slide down a ramp
-        bool physicsCooldown;
         private CapsuleCollider col;
 
         private void Start()
@@ -49,11 +52,11 @@ namespace MasayaScripts
 
             inputMaster = new InputMaster(); //Creates the inputs we will be using for the player
             inputMaster.PlayerMovement.Jump.performed += Jump; //Create action for the jump button
+            inputMaster.PlayerMovement.Jump.canceled += JumpCancel;
             inputMaster.Enable(); //enabled to inputs
 
             StartCoroutine(CharacterDirection()); //Starts a coroutine checking for the players direction
         }
-
 
         private void Update()
         {
@@ -106,9 +109,38 @@ namespace MasayaScripts
         {
             Vector3 horizontalDirection = transform.right * horizontal; //Gets how much the player is moving left/right
             Vector3 verticalDirection = transform.forward * vertical; //Gets how much the player is moving forward/back
-            Vector3 moveDirection = (verticalDirection + horizontalDirection).normalized * speed * Time.deltaTime * 1; //Combines the directions together
-                                                                                                                       //rb.MovePosition(moveDirection + rb.position); //Moves the player to the new position by adding the movedirection to the players current position
-            rb.MovePosition(transform.position + moveDirection);
+            Vector3 moveDirection = (verticalDirection + horizontalDirection).normalized * speed * Time.deltaTime; //Combines the directions together
+
+            //Check if the player is either grounded or in the air
+            if (isGrounded == true)
+            {
+                //Apply normal movement to player
+                rb.MovePosition(transform.position + moveDirection);
+
+                airDirection = moveDirection; //Sets the original airDirection for when the player jumps
+            }
+            else
+            {
+                //Check if the player has released the jump button early
+                if (rb.velocity.y > 0 && isJumping == false)
+                {
+                    //Lowers the y velocity to stop the player from jumping higher
+                    Vector3 currentVelocity = rb.velocity;
+                    currentVelocity.y = Mathf.Lerp(currentVelocity.y, 0, Time.deltaTime * 10);
+                    rb.velocity = currentVelocity;
+                }
+
+                //Checks which direction the player is moving in and multiply by air control
+                airDirection += moveDirection * airControl * Time.deltaTime;
+                Vector3 fullMagnitude = Vector3.up * speed * Time.deltaTime; //Gets the max magnitude the player can move in
+                if(airDirection.magnitude > fullMagnitude.magnitude) //Check if the current airdirection is above the max magnitude
+                {
+                    //This is so that the player can't jump faster than walking
+                    airDirection = Vector3.ClampMagnitude(airDirection, fullMagnitude.magnitude); //Clamps the airdirection magnitude
+                }
+                //Apply airdirection
+                rb.MovePosition(transform.position + airDirection);
+            }
         }
 
         /// <summary>
@@ -171,7 +203,26 @@ namespace MasayaScripts
                 //If the raycast hits something which has the ground layer
                 //then we can set the isGrounded boolean to true and change the physics material so the player won't slip
                 isGrounded = true;
-                ChangePhysicsMaterial(maxFriction);
+
+                if (isJumping == true) //Check if we are jumping
+                {
+                    if (rb.velocity.y < 0)
+                    {
+                        //if the velocity is under 0 that means we are falling
+                        //This means we know that the player has finished the jump
+                        ChangePhysicsMaterial(maxFriction);
+                        isJumping = false;
+                    }
+                    else
+                    {
+                        //If the velocity is above 0, that means the character is still jumping
+                        isGrounded = false;
+                    }
+                }
+                else
+                {
+                    ChangePhysicsMaterial(maxFriction);
+                }
             }
             else
             {
@@ -190,31 +241,28 @@ namespace MasayaScripts
         /// <param name="obj"></param>
         private void Jump(InputAction.CallbackContext obj)
         {
-            if (isGrounded && canMove)
+            if (isGrounded && canMove) //Check if we are grounded first
             {
-                isGrounded = false;
-                ChangePhysicsMaterial(noFriction);
-                if (!physicsCooldown)
-                {
-                    physicsCooldown = true;
-                    Invoke("ResetPhysicsCooldown", 0.1f);
-                }
-                rb.AddForce(Vector3.up * jumpHeight * 100);
+                isGrounded = false; //Set isGrounded to false
+                isJumping = true; //Set isJumping to true
+
+                ChangePhysicsMaterial(noFriction); //Set the physics material to no friction so the player doesn't get stuck against walls
+                rb.velocity = Vector3.zero; //Set the velocity to 0
+                rb.angularVelocity = Vector3.zero;
+                rb.AddForce(Vector3.up * jumpHeight * 100); //Adds force to the player so they jump
             }
         }
 
-        //This cooldown is used so that the player can jump while pressing against an object
-        void ResetPhysicsCooldown()
+        //This gets called when the player releases the jump key
+        private void JumpCancel(InputAction.CallbackContext obj)
         {
-            physicsCooldown = false;
+            isJumping = false;
         }
 
+        //Changes the physics material to either no or max frictio
         void ChangePhysicsMaterial(PhysicMaterial mat)
         {
-            if (!physicsCooldown)
-            {
-                col.material = mat;
-            }
+            col.material = mat;
         }
     }
 }

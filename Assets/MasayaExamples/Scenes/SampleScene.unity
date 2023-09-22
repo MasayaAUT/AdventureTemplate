@@ -2543,6 +2543,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1408714965777040869, guid: f07d6a9c2538fb9499ba124284109d15,
+        type: 3}
+      propertyPath: speed
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1408714965777040869, guid: f07d6a9c2538fb9499ba124284109d15,
+        type: 3}
+      propertyPath: airControl
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1408714965777040869, guid: f07d6a9c2538fb9499ba124284109d15,
+        type: 3}
+      propertyPath: jumpHeight
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1408714965777040871, guid: f07d6a9c2538fb9499ba124284109d15,
+        type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f07d6a9c2538fb9499ba124284109d15, type: 3}
 --- !u!1001 &5622861331159190581
