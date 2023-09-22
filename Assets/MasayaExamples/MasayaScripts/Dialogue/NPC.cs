@@ -20,6 +20,7 @@ namespace MasayaScripts
         int conditionIndex;
         bool playerFound;
         bool isTalking;
+        int itemAmount;
 
         private void Update()
         {
@@ -160,6 +161,24 @@ namespace MasayaScripts
         public void CompleteQuest(string questName)
         {
             QuestManager.current.HasCompletedQuest(questName);
+        }
+        public void AddItem(Item item)
+        {
+            int amount = itemAmount;
+            InventoryManager.current.AddItemToInventory(item, amount);
+
+            itemAmount = 1;
+        }
+        public void RemoveItem(Item item)
+        {
+            int amount = itemAmount;
+            InventoryManager.current.RemoveItemFromInventory(item, amount);
+
+            itemAmount = 1;
+        }
+        public void SetItemAmount(int amount)
+        {
+            itemAmount = amount;
         }
         public void OnTriggerEnter(Collider other)
         {
