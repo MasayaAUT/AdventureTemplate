@@ -58,6 +58,13 @@ namespace MasayaScripts
             StartCoroutine(CharacterDirection()); //Starts a coroutine checking for the players direction
         }
 
+        private void OnDisable()
+        {
+            inputMaster.PlayerMovement.Jump.performed -= Jump; //Remove action for the jump button
+            inputMaster.PlayerMovement.Jump.canceled -= JumpCancel;
+            inputMaster.Disable(); //disable inputs
+        }
+
         private void Update()
         {
             //Checks if the player can move
