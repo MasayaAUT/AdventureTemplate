@@ -99,6 +99,9 @@ public class AnimationStateSetParameters : EditorWindow
 
     public static void SetParameters()
     {
+            int choiceAmount = 0;
+            int endAmount = 0;
+    
         for (int x = 0; x < Selection.objects.Length; x++)
         {
             UnityEditor.Animations.AnimatorState ac = Selection.objects[x] as UnityEditor.Animations.AnimatorState;
@@ -138,7 +141,8 @@ public class AnimationStateSetParameters : EditorWindow
                         }
                         break;
                     case DialogueNode.DialogueType.MultiChoice:
-                        Selection.objects[x].name = "{Choices}";
+                            Selection.objects[x].name = "{Choices - " + choiceAmount + "}";
+                            choiceAmount++;
                         for (int i = 0; i < ac.transitions.Length; i++)
                         {
                             ac.transitions[i].hasExitTime = false;
@@ -146,7 +150,8 @@ public class AnimationStateSetParameters : EditorWindow
                         }
                         break;
                     case DialogueNode.DialogueType.End:
-                        Selection.objects[x].name = "{End}";
+                            endAmount++;
+                            Selection.objects[x].name = "{End - " + choiceAmount + "}";
                         break;
                 }
             }
